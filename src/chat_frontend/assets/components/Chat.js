@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 import Sidepanel from './Sidepanel';
 import WebSocketInstance from '../websocket';
@@ -9,13 +9,14 @@ export default function Chat(props) {
   const [message, setMessage] = useState('');
 
   useEffect(() => {
+    console.log('henlo')
     waitForSocketConnection(() => {
       WebSocketInstance.addCallbacks(setMessages, addMessage);
       WebSocketInstance.fetchMessages(props.currentUser);
     });
-  }, [addMessage, setMessages, props.currentUser]);
+  }, []);
 
-  function waitForSocketConnection(callback) {
+  function waitForSocketConnection (callback) {
     setTimeout(
       function() {
         if (WebSocketInstance.state() === 1) {
@@ -30,10 +31,8 @@ export default function Chat(props) {
     1);
   }
 
-  function addMessage(message) {
-    console.log(messages);
-    console.log(message);
-    setMessages([...messages, message])
+  function addMessage (message) {
+    setMessages(existingMessages => [...existingMessages, message]);
   }
 
   function sendMessageHandler(e) {
@@ -49,7 +48,6 @@ export default function Chat(props) {
   function messageChangeHandler(e) {
     setMessage(e.target.value)
   }
-
 
   const messagesComponents = messages?.map(message => {
     const currentUser = 'andriy';
