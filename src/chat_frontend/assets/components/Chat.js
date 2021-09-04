@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 import Sidepanel from './Sidepanel';
-import WebSocketInstance from '../websocket';
+import WebSocketInstance from '../services/websocket';
 import Message from './Message';
 
 export default function Chat(props) {
@@ -9,12 +9,21 @@ export default function Chat(props) {
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    console.log('henlo')
+    WebSocketInstance.connect();
+  })
+
+  useEffect(() => {
     waitForSocketConnection(() => {
       WebSocketInstance.addCallbacks(setMessages, addMessage);
       WebSocketInstance.fetchMessages(props.currentUser);
     });
   }, []);
+
+  const messagesEndRef = useRef(null);
+
+  scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({behavior: 'smooth'});
+  }
 
   function waitForSocketConnection (callback) {
     setTimeout(
@@ -60,7 +69,7 @@ export default function Chat(props) {
       />
     );
   });
-  
+
   return (
     <div className="container">
       <h3 className=" text-center">Messaging</h3>
@@ -72,6 +81,7 @@ export default function Chat(props) {
           <div className="mesgs">
             <div className="msg_history">
               { messagesComponents }
+              <div ref={messagesEndRef} /> 
             </div>
             <form onSubmit={sendMessageHandler}>
               <div className="type_msg">

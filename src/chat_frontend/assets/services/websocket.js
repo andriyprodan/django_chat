@@ -1,3 +1,5 @@
+// import axiosInstance from "./axiosApi"; // TODO
+
 class WebSocketService {
   static instance = null;
   callbacks = {};
@@ -15,7 +17,8 @@ class WebSocketService {
 
   connect() {
     const path = 'ws://127.0.0.1:8000/ws/chat/test/';
-    this.socketRef = new WebSocket(path);
+    const token = localStorage.getItem('access_token');
+    this.socketRef = new WebSocket(path + '?token=' + token);
     this.socketRef.onopen = () => {
       console.log('websocket open');
     }
@@ -23,6 +26,7 @@ class WebSocketService {
       this.socketNewMessage(e.data);
     }
     this.socketRef.onerror = e => {
+      // axiosInstance.post('users/token/refresh/' ... // TODO
       console.log(e.message);
     }
     this.socketRef.onclose = () => {
