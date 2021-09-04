@@ -21,7 +21,7 @@ export default function Chat(props) {
 
   const messagesEndRef = useRef(null);
 
-  scrollToBottom = () => {
+  function scrollToBottom() {
     messagesEndRef.current?.scrollIntoView({behavior: 'smooth'});
   }
 

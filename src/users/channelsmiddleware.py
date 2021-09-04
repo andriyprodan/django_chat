@@ -45,7 +45,7 @@ class QueryAuthMiddleware:
         else:
             #  Then token is valid, decode it
             decoded_data = jwt_decode(token, settings.SECRET_KEY, algorithms=["HS256"])
-            print(decoded_data)
+            # print(decoded_data)
             # Will return a dictionary like -
             # {
             #     "token_type": "access",

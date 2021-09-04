@@ -1,7 +1,32 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Contact from './Contact';
+import axiosInstance from '../services/axiosApi';
 
 export default function Sidepanel(props) {
+
+  const [chats, setChats] = useState([]);
+
+  useEffect(() => {
+    async function getUserChats() {
+      try {
+        let res = await axiosInstance.get('chat/');
+        setChats(res.data);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+    getUserChats();
+  }, [])
+
+  const activeChats = chats?.map(c => (
+    <Contact
+      key={c.id}
+      name="Louis Litt"
+      picURL="https://ptetutorials.com/images/user-profile.png"
+      chatURL={`/${c.id}`}
+    />
+  ));
+
   return (
     <div className="inbox_people">
       <div className="headind_srch">
@@ -18,11 +43,7 @@ export default function Sidepanel(props) {
         </div>
       </div>
       <div className="inbox_chat">
-        <Contact 
-          name="Louis Litt"
-          picURL="https://ptetutorials.com/images/user-profile.png"
-          chatURL="/louis" 
-        />
+        { activeChats }
       </div>
     </div>
   )
